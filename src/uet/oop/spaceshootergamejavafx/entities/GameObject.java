@@ -2,6 +2,7 @@ package uet.oop.spaceshootergamejavafx.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 
 /**
  * Skeleton for GameObject. Base class for all game objects.
@@ -9,8 +10,7 @@ import javafx.geometry.Bounds;
  */
 public abstract class GameObject {
     // Position and size
-    protected double x;
-    protected double y;
+    protected Point2D position;
     protected double width;
     protected double height;
 
@@ -22,8 +22,7 @@ public abstract class GameObject {
      * @param height object height
      */
     public GameObject(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
+        this.position = new Point2D(x, y);
         this.width = width;
         this.height = height;
     }
@@ -31,7 +30,7 @@ public abstract class GameObject {
     /**
      * Updates the game object's state each frame.
      */
-    public abstract void update();
+    public abstract void update(float deltaTime);
 
     /**
      * Renders the game object on the canvas.
@@ -45,12 +44,20 @@ public abstract class GameObject {
      */
     public abstract boolean isDead();
 
+    public Point2D getPosition() {
+        return position;
+    }
+
     /**
      * Returns the current X coordinate.
      * @return x position
      */
     public double getX() {
-        return x;
+        return position.getX();
+    }
+
+    public void setX(double x) {
+        this.position = new Point2D(x, position.getY());
     }
 
     /**
@@ -58,7 +65,11 @@ public abstract class GameObject {
      * @return y position
      */
     public double getY() {
-        return y;
+        return position.getY();
+    }
+
+    public void setY(double y) {
+        this.position = new Point2D(position.getX(), y);
     }
 
     /**
@@ -68,8 +79,8 @@ public abstract class GameObject {
     public Bounds getBounds() {
         // Provided by engine; do not modify
         return new javafx.scene.shape.Rectangle(
-            x - getWidth() / 2,
-            y - getHeight() / 2,
+            getX() - getWidth() / 2,
+            getY() - getHeight() / 2,
             getWidth(),
             getHeight()
         ).getBoundsInLocal();

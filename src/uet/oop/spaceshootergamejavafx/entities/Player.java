@@ -1,17 +1,19 @@
 package uet.oop.spaceshootergamejavafx.entities;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import java.util.List;
+import javafx.scene.input.KeyCode;
+import javafx.geometry.Point2D;
 
 /**
- * Skeleton for Player. Students must implement movement, rendering,
- * shooting, and health/state management.
+ * Represents the player in the game with movement, rendering, shooting, and health management.
  */
-public class Player extends GameObject{
+public class Player extends GameObject {
 
     // Hitbox dimensions
-    private static final int WIDTH = 40;
-    private static final int HEIGHT = 40;
+    private static final int WIDTH = 30;
+    private static final int HEIGHT = 30;
 
     // Movement speed
     private static final double SPEED = 5;
@@ -21,117 +23,202 @@ public class Player extends GameObject{
     private boolean moveRight;
     private boolean moveForward;
     private boolean moveBackward;
+    private boolean shootPressed;
+    private boolean focusPressed;
 
-    // Player health
+    private Image playerImage;
+    private Image playerLeftImage;
+    private Image playerRightImage;
+
+    // Player attributes
     private int health;
+    private int powerLevel;
 
     // State flag for removal
     private boolean dead;
 
     /**
      * Constructs a Player at the given position.
+     *
      * @param x initial X position
      * @param y initial Y position
      */
     public Player(double x, double y) {
         super(x, y, WIDTH, HEIGHT);
-        // TODO: initialize health, dead flag, load sprite if needed
+        this.health = 5;
+        this.powerLevel = 1;
+        this.dead = false;
+
+        // Load images
+        this.playerImage = new Image("img/player.png");
+        this.playerLeftImage = new Image("img/player_left.png");
+        this.playerRightImage = new Image("img/player_right.png");
+
+        this.moveForward = false;
+        this.moveBackward = false;
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.shootPressed = false;
+        this.focusPressed = false;
     }
 
-    /**
-     * Returns the width of the player.
-     */
     @Override
     public double getWidth() {
-        // TODO: return width
         return WIDTH;
     }
 
-    /**
-     * Returns the height of the player.
-     */
     @Override
     public double getHeight() {
-        // TODO: return height
         return HEIGHT;
-    }
-
-    /**
-     * Returns current health of the player.
-     */
-    public int getHealth() {
-        // TODO: return health
-        return health;
-    }
-
-    /**
-     * Sets player's health.
-     */
-    public void setHealth(int health) {
-        // TODO: update health
-        this.health = health;
     }
 
     /**
      * Updates player position based on movement flags.
      */
     @Override
-    public void update() {
-        // TODO: implement movement with SPEED and screen bounds
+    public void update(float deltaTime) {
+        double speed = SPEED;
+        if (isFocus()) {
+            speed = SPEED / 2;
+        }
+        if (isMoveForward()) {
+            setY(getY() - speed * deltaTime);
+        }
+        if (isMoveBackward()) {
+            setY(getY() + speed * deltaTime);
+        }
+        if (isMoveLeft()) {
+            setX(getX() - speed * deltaTime);
+        }
+        if (isMoveRight()) {
+            setX(getX() + SPEED * deltaTime);
+        }
+        if (isShooting()) {
+            if (isFocus()) {
+                fireBullet(true);
+            } else {
+                fireBullet(false);
+            }
+        } 
+        if (health <= 0) {
+            setDead(true);
+        }
+        
     }
+
+    private boolean isMoveForward() { return moveForward; }
+    private boolean isMoveBackward() { return moveBackward; }
+    private boolean isMoveLeft() { return moveLeft; }
+    private boolean isMoveRight() { return moveRight; }
+    private boolean isShooting() { return shootPressed; }
+    private boolean isFocus() { return focusPressed; }
+
 
     /**
      * Renders the player on the canvas.
      */
     @Override
     public void render(GraphicsContext gc) {
-        // TODO: draw sprite or placeholder shape
+        gc.drawImage(playerImage, getX(), getY(), WIDTH, HEIGHT);
+        if (isMoveLeft()) {
+            gc.drawImage(playerLeftImage, getX(), getY(), WIDTH, HEIGHT);
+        }
+        if (isMoveRight()) {
+            gc.drawImage(playerRightImage, getX(), getY(), WIDTH, HEIGHT);
+        }
+    }
+
+    public void fireBullet(boolean isFocus) {
+        if (isFocus) {
+            BulletTask.spamBullet(getPosition(), new Point2D(0, 1), powerLevel * 2, "player");
+        } else {
+            BulletTask.spamBullet(getPosition(), new Point2D(0, 1), powerLevel, "player");
+            BulletTask.spamBullet(getPosition(), new Point2D(-0.3f, 1), powerLevel, "player");
+            BulletTask.spamBullet(getPosition(), new Point2D(0.3f, 1), powerLevel, "player");
+        }
     }
 
     /**
-     * Sets movement flags.
+     * Handles key press events.
      */
-    public void setMoveLeft(boolean moveLeft) {
-        // TODO: update moveLeft flag
-        this.moveLeft = moveLeft;
+    public void handleKeyPress(KeyCode key) {
+        switch (key) {
+            case LEFT:
+                moveLeft = true;
+                break;
+            case RIGHT:
+                moveRight = true;
+                break;
+            case UP:
+                moveForward = true;
+                break;
+            case DOWN:
+                moveBackward = true;
+                break;
+            case Z:
+                shootPressed = true;
+                break;
+            case SHIFT:
+                focusPressed = true;
+                break;
+            default:
+                // Do nothing for other keys
+                break;
+        }  
+    }              
+    public void handleKeyRelease(KeyCode key) {
+        switch (key) {
+            case LEFT:
+                moveLeft = false;
+                break;
+            case RIGHT:
+                moveRight = false;
+                break;
+            case UP:
+                moveForward = false;
+                break;
+            case DOWN:
+                moveBackward = false;
+                break;
+            case Z:
+                shootPressed = false;
+                break;
+            case SHIFT:
+                focusPressed = false;
+                break;
+            default:
+                // Do nothing for other keys
+                break;
+        }
     }
 
-    public void setMoveRight(boolean moveRight) {
-        // TODO: update moveRight flag
-        this.moveRight = moveRight;
+    public int getHealth() {
+        return health;
     }
 
-    public void setMoveForward(boolean moveForward) {
-        // TODO: update moveForward flag
-        this.moveForward = moveForward;
+    public void addHealth() {
+        health += 1;
     }
 
-    public void setMoveBackward(boolean moveBackward) {
-        // TODO: update moveBackward flag
-        this.moveBackward = moveBackward;
+    public void takeDamage() {
+        health += 1;
     }
 
-    /**
-     * Shoots a bullet from the player.
-     */
-    public void shoot(List<GameObject> newObjects) {
-        // TODO: create and add new Bullet at (x, y - HEIGHT/2)
+    public void addPower() {
+        powerLevel += 1;
     }
 
-    /**
-     * Marks the player as dead.
-     */
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
     public void setDead(boolean dead) {
-        // TODO: update dead flag
         this.dead = dead;
     }
 
-    /**
-     * Checks whether the player is dead.
-     */
     @Override
     public boolean isDead() {
-        // TODO: return dead flag
         return dead;
     }
 }
+

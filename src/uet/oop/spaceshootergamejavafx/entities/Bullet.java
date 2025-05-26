@@ -1,6 +1,8 @@
 package uet.oop.spaceshootergamejavafx.entities;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 /**
  * Skeleton for Bullet. Students must implement movement,
@@ -12,8 +14,11 @@ public class Bullet extends GameObject {
     public static final int WIDTH = 4;
     public static final int HEIGHT = 15;
 
+    public Point2D direction;
+    public Image bulletImage;
+
     // Movement speed of the bullet
-    private static final double SPEED = 7;
+    private static final double SPEED = 20;
 
     // Flag to indicate if bullet should be removed
     private boolean dead;
@@ -23,17 +28,26 @@ public class Bullet extends GameObject {
      * @param x initial X position
      * @param y initial Y position
      */
-    public Bullet(double x, double y) {
-        super(x, y, WIDTH, HEIGHT);
+    public Bullet(Point2D position, Point2D direction) {
+        super(position.getX(), position.getY() - 10, WIDTH, HEIGHT);
+        this.direction = direction;
+        this.bulletImage = new Image("img/player_bullet.png");
         // TODO: initialize dead flag if needed
+        this.dead = false;
     }
 
     /**
      * Updates bullet position each frame.
      */
     @Override
-    public void update() {
+    public void update(float deltaTime) {
         // TODO: move bullet vertically by SPEED
+        setX(getX() + direction.getX() * SPEED * deltaTime);
+        setY(getY() + direction.getY() * SPEED * deltaTime);
+
+        if (getY() < 0 || getY() > 600) {
+            setDead(true);
+        }
     }
 
     /**
@@ -43,6 +57,7 @@ public class Bullet extends GameObject {
     @Override
     public void render(GraphicsContext gc) {
         // TODO: draw bullet (e.g., filled rectangle or sprite)
+        gc.drawImage(bulletImage, getX(), getY(), WIDTH, HEIGHT);
     }
 
     /**
@@ -71,6 +86,7 @@ public class Bullet extends GameObject {
      */
     public void setDead(boolean dead) {
         // TODO: update dead flag
+        this.dead = dead;
     }
 
     /**

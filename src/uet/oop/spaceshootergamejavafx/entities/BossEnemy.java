@@ -11,6 +11,9 @@ public class BossEnemy extends Enemy {
 
     // Health points of the boss
     private int health;
+    private int currentPhrase;
+    private float stateTime;
+
 
     // Hitbox dimensions
     private static final int WIDTH = 50;
@@ -24,7 +27,7 @@ public class BossEnemy extends Enemy {
      * @param x initial X position
      * @param y initial Y position
      */
-    public BossEnemy(double x, double y) {
+    public BossEnemy(double x, double y, int width, int) {
         super(x, y);
         // TODO: initialize health, speeds, and load resources
     }
