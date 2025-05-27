@@ -12,13 +12,13 @@ public class Bullet extends GameObject {
 
     // Width and height of the bullet
     public static final int WIDTH = 4;
-    public static final int HEIGHT = 15;
+    public static final int HEIGHT = 8;
 
     public Point2D direction;
     public Image bulletImage;
 
     // Movement speed of the bullet
-    private static final double SPEED = 20;
+    private static final double SPEED = 300;
 
     // Flag to indicate if bullet should be removed
     private boolean dead;
@@ -45,7 +45,7 @@ public class Bullet extends GameObject {
         setX(getX() + direction.getX() * SPEED * deltaTime);
         setY(getY() + direction.getY() * SPEED * deltaTime);
 
-        if (getY() < 0 || getY() > 600) {
+        if (getY() < 0 || getY() > 480 || getX() < 0 || getX() > 360) {
             setDead(true);
         }
     }

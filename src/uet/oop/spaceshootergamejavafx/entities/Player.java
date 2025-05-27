@@ -2,9 +2,11 @@ package uet.oop.spaceshootergamejavafx.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import java.util.List;
 import javafx.scene.input.KeyCode;
 import javafx.geometry.Point2D;
+import uet.oop.spaceshootergamejavafx.entities.BulletTask;
+import uet.oop.spaceshootergamejavafx.entities.Bullet;
+import java.util.List;
 
 /**
  * Represents the player in the game with movement, rendering, shooting, and health management.
@@ -33,6 +35,7 @@ public class Player extends GameObject {
     // Player attributes
     private int health;
     private int powerLevel;
+    private int pointLevel;
 
     // State flag for removal
     private boolean dead;
@@ -47,6 +50,7 @@ public class Player extends GameObject {
         super(x, y, WIDTH, HEIGHT);
         this.health = 5;
         this.powerLevel = 1;
+        this.pointLevel = 0;
         this.dead = false;
 
         // Load images
@@ -95,9 +99,9 @@ public class Player extends GameObject {
         }
         if (isShooting()) {
             if (isFocus()) {
-                fireBullet(true);
+                fireBullet(true, SpaceShooter.getPlayerBullets());
             } else {
-                fireBullet(false);
+                fireBullet(false, SpaceShooter.getPlayerBullets());
             }
         } 
         if (health <= 0) {
@@ -128,13 +132,13 @@ public class Player extends GameObject {
         }
     }
 
-    public void fireBullet(boolean isFocus) {
+    public void fireBullet(boolean isFocus, List<Bullet> bullets) {
         if (isFocus) {
-            BulletTask.spamBullet(getPosition(), new Point2D(0, 1), powerLevel * 2, "player");
+            BulletTask.spamBullet(bullets,getPosition(), new Point2D(0, 1), powerLevel * 2);
         } else {
-            BulletTask.spamBullet(getPosition(), new Point2D(0, 1), powerLevel, "player");
-            BulletTask.spamBullet(getPosition(), new Point2D(-0.3f, 1), powerLevel, "player");
-            BulletTask.spamBullet(getPosition(), new Point2D(0.3f, 1), powerLevel, "player");
+            BulletTask.spamBullet(bullets,getPosition(), new Point2D(0, 1), powerLevel);
+            BulletTask.spamBullet(bullets,getPosition(), new Point2D(-0.3f, 1), powerLevel);
+            BulletTask.spamBullet(bullets,getPosition(), new Point2D(0.3f, 1), powerLevel);
         }
     }
 
@@ -206,6 +210,20 @@ public class Player extends GameObject {
 
     public void addPower() {
         powerLevel += 1;
+    }
+
+    public int getPowerLevel() {
+        return powerLevel;
+    }
+
+    public void addPoints(int points) {
+        pointLevel += points;
+        if (pointLevel >= 50) {
+            addHealth();
+        }
+        if (pointLevel >= 100) {
+            addHealth();
+        }
     }
 
     public void setHealth(int health) {

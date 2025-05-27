@@ -4,6 +4,12 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.image.Image;
+import java.util.List;
+import java.util.ArrayList;
+import uet.oop.spaceshootergamejavafx.entities.*;
 
 /**
  * Skeleton for SpaceShooter. Students must implement game loop,
@@ -20,6 +26,15 @@ public class SpaceShooter extends Application {
     private boolean reset;
     private boolean levelUpShown;
     private boolean gameRunning;
+    public static List<EnemyType1> enemiesType1;
+    public static List<EnemyType2> enemiesType2;
+    public static List<Bullet> playerBullets;
+    public static List<EnemyBullet> enemyBullets;
+    public static List<EnemyBullet> bossBullets;
+    private BossEnemy bossEnemy;
+    private Player player;
+    private List<PowerUp> powerUps;
+
 
     // TODO: Declare UI labels, lists of GameObjects, player, root Pane, Scene, Stage
 
@@ -36,6 +51,39 @@ public class SpaceShooter extends Application {
         // TODO: set up AnimationTimer game loop and start it
         // TODO: show primaryStage
     }
+
+    public static List<Bullet> getPlayerBullets() {
+        return playerBullets;
+    }
+
+    public static List<EnemyBullet> getEnemyBullets() {
+        return enemyBullets;
+    }
+
+    public static List<EnemyType1> getEnemiesType1() {
+        return enemiesType1;
+    }
+
+    public static List<EnemyType2> getEnemiesType2() {
+        return enemiesType2;
+    }
+
+    public static List<EnemyBullet> getBossBullets() {
+        return bossBullets;
+    }
+
+    public BossEnemy getBossEnemy() {
+        return bossEnemy;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public List<PowerUp> getPowerUps() {
+        return powerUps;
+    }
+    
 
     // Game mechanics stubs
 

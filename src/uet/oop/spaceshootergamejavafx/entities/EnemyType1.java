@@ -2,10 +2,9 @@ package uet.oop.spaceshootergamejavafx.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import java.util.List;
-import javafx.scene.input.KeyCode;
 import javafx.geometry.Point2D;
-
+import uet.oop.spaceshootergamejavafx.entities.*;
+import java.util.List;
 /**
  * Skeleton for Enemy. Students must implement movement, rendering,
  * and death state without viewing the original implementation.
@@ -53,12 +52,12 @@ public class EnemyType1 extends GameObject {
         // Clamp the Y-coordinate to stop exactly at the target position
             if (getY() > targetY) {
             setY(targetY);
-            fireBullet();
-        }
-        if (getHealth() == 0) {
+            fireBullet(SpaceShooter.getEnemyBullets());
+            }
+        
+        if (health <= 0) {
             setDead(true);
         }
-
     }
 
     /**
@@ -71,8 +70,8 @@ public class EnemyType1 extends GameObject {
         gc.drawImage(Type1Image, getX(), getY(), WIDTH, HEIGHT);
     }
 
-    public void fireBullet() {
-         BulletTask.spamBullet(getPosition(), new Point2D(0, 1), 10 ,"enemy");
+    public void fireBullet(List<EnemyBullet> enemyBullets) {
+         BulletTask.spamEBullet(enemyBullets,getPosition(), new Point2D(0, 1));
     }
     /**
      * Returns the current width of the enemy.
@@ -94,9 +93,6 @@ public class EnemyType1 extends GameObject {
         return HEIGHT;
     }
 
-    public int getHealth() {
-        return health;
-    }
 
 
     /**

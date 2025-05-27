@@ -2,8 +2,8 @@ package uet.oop.spaceshootergamejavafx.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import java.util.List;
-import javafx.geometry.Point2D;
+import uet.oop.spaceshootergamejavafx.entities.*;
+
 
 /**
  * Skeleton for Enemy. Students must implement movement, rendering,
@@ -70,7 +70,7 @@ public class EnemyType2 extends GameObject {
     }
 
     public void fireBullet() {
-        BulletTask.fireRadialWave(20, 2);
+        BulletTask.spamRadialBullets(SpaceShooter.getEnemyBullets(), position, 10);
     }
 
     public void takeDamage() {
